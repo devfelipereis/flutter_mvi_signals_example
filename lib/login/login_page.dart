@@ -20,15 +20,7 @@ class _LoginPageState extends State<LoginPage>
   LoginViewModel createViewModel() => widget.viewModel;
 
   @override
-  void onEffect(LoginEffect? effect) {
-    if (effect == null) {
-      return;
-    }
-
-    if (!context.mounted) {
-      return;
-    }
-
+  void onEffect(LoginEffect effect) {
     switch (effect) {
       case LoginSuccess():
         showDialog<void>(

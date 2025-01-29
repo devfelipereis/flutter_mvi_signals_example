@@ -6,7 +6,7 @@ import 'package:signals_mvi_example/core/base_view_model.dart';
 mixin ViewModelMixin<T extends StatefulWidget,
     V extends BaseViewModel<BaseState, BaseEvent, BaseEffect>> on State<T> {
   late final V viewModel;
-  late final StreamSubscription<BaseEffect?> _effectSubscription;
+  late final StreamSubscription<BaseEffect> _effectSubscription;
 
   BaseState get state => viewModel.state.value;
 
@@ -14,7 +14,7 @@ mixin ViewModelMixin<T extends StatefulWidget,
   V createViewModel();
 
   @protected
-  void onEffect(covariant BaseEffect? effect);
+  void onEffect(covariant BaseEffect effect);
 
   @override
   void initState() {
