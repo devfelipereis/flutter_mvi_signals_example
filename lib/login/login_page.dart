@@ -20,23 +20,27 @@ class _LoginPageState extends State<LoginPage>
   LoginViewModel createViewModel() => widget.viewModel;
 
   @override
-  void onEffect(LoginEffect effect) {
-    switch (effect) {
-      case LoginSuccess():
-        showDialog<void>(
-          context: context,
-          builder: (context) => const AlertDialog(
-            title: Text('Login success!'),
-          ),
-        );
-      case LoginError():
-        showDialog<void>(
-          context: context,
-          builder: (context) => const AlertDialog(
-            title: Text('Login error!'),
-          ),
-        );
-    }
+  void onEffect(LoginEffect effect) => switch (effect) {
+        LoginSuccess() => _onLoginSuccess(),
+        LoginError() => _onLoginError(),
+      };
+
+  void _onLoginSuccess() {
+    showDialog<void>(
+      context: context,
+      builder: (context) => const AlertDialog(
+        title: Text('Login success!'),
+      ),
+    );
+  }
+
+  void _onLoginError() {
+    showDialog<void>(
+      context: context,
+      builder: (context) => const AlertDialog(
+        title: Text('Login error!'),
+      ),
+    );
   }
 
   @override
