@@ -31,6 +31,7 @@ class _PostsScreenState extends State<PostsScreen>
       body: RefreshIndicator(
         onRefresh: () async => addEvent(FetchPosts()),
         child: Watch(
+          debugLabel: 'Posts Content',
           (context) => AnimatedSwitcher(
             duration: const Duration(milliseconds: 500),
             child: switch (viewModel.state.value) {
