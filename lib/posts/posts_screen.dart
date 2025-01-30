@@ -28,14 +28,18 @@ class _PostsScreenState extends State<PostsScreen>
       appBar: AppBar(
         title: const Text('Posts'),
       ),
-      body: Watch(
-        (context) => AnimatedSwitcher(
-          duration: const Duration(milliseconds: 500),
-          child: switch (viewModel.state.value) {
-            PostsLoading() => const Center(child: CircularProgressIndicator()),
-            PostsLoaded(posts: final posts) => _PostList(posts: posts),
-            PostsError(error: final error) => _ErrorMessage(error: error),
-          },
+      body: RefreshIndicator(
+        onRefresh: () async => addEvent(FetchPosts()),
+        child: Watch(
+          (context) => AnimatedSwitcher(
+            duration: const Duration(milliseconds: 500),
+            child: switch (viewModel.state.value) {
+              PostsLoading() =>
+                const Center(child: CircularProgressIndicator()),
+              PostsLoaded(posts: final posts) => _PostList(posts: posts),
+              PostsError(error: final error) => _ErrorMessage(error: error),
+            },
+          ),
         ),
       ),
     );

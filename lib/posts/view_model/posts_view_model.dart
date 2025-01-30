@@ -23,18 +23,14 @@ final class PostsViewModel
       };
 
   Future<void> _onFetchPosts() async {
-    print('Fetching posts');
     updateState(const PostsLoading());
 
     final result = await _postsRepository.fetchPosts();
-    print('Posts fetched');
 
     if (result.isSuccess()) {
-      print('Posts loaded');
       updateState(PostsLoaded(result.tryGetSuccess()!));
       return;
     }
-    print('Posts error');
 
     updateState(PostsError(result.tryGetError()!));
   }
