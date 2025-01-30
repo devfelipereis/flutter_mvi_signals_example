@@ -34,8 +34,7 @@ class _PostsScreenState extends State<PostsScreen>
           (context) => AnimatedSwitcher(
             duration: const Duration(milliseconds: 500),
             child: switch (viewModel.state.value) {
-              PostsLoading() =>
-                const Center(child: CircularProgressIndicator()),
+              PostsLoading() => const _LoadingIndicator(),
               PostsLoaded(posts: final posts) => _PostList(posts: posts),
               PostsError(error: final error) => _ErrorMessage(error: error),
             },
@@ -65,6 +64,15 @@ class _PostList extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class _LoadingIndicator extends StatelessWidget {
+  const _LoadingIndicator();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: CircularProgressIndicator());
   }
 }
 
