@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:signals_mvi_example/core/view_model_mixin.dart';
 import 'package:signals_mvi_example/login/view_model/login_view_model.dart';
+import 'package:signals_mvi_example/posts/data/posts_repository.dart';
+import 'package:signals_mvi_example/posts/posts_screen.dart';
+import 'package:signals_mvi_example/posts/view_model/posts_view_model.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
@@ -17,7 +20,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage>
     with ViewModelMixin<LoginPage, LoginViewModel> {
   @override
-  LoginViewModel createViewModel() => widget.viewModel;
+  LoginViewModel provideViewModel() => widget.viewModel;
 
   @override
   void onEffect(LoginEffect effect) => switch (effect) {
@@ -26,10 +29,13 @@ class _LoginPageState extends State<LoginPage>
       };
 
   void _onLoginSuccess() {
-    showDialog<void>(
-      context: context,
-      builder: (context) => const AlertDialog(
-        title: Text('Login success!'),
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => PostsScreen(
+          viewModel: PostsViewModel(
+            postsRepository: PostsRepository(),
+          ),
+        ),
       ),
     );
   }
@@ -38,7 +44,7 @@ class _LoginPageState extends State<LoginPage>
     showDialog<void>(
       context: context,
       builder: (context) => const AlertDialog(
-        title: Text('Login error!'),
+        title: Text('Error, please try again.'),
       ),
     );
   }
@@ -47,7 +53,7 @@ class _LoginPageState extends State<LoginPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter Demo'),
+        title: const Text('MVI Example'),
       ),
       body: Center(
         child: Column(
@@ -70,7 +76,14 @@ class _LoginPageState extends State<LoginPage>
               debugLabel: 'Password',
             ),
             ElevatedButton(
-              onPressed: () => addEvent(LoginRequested()),
+              onPressed: () async {
+                if (FocusScope.of(context).hasFocus) {
+                  FocusScope.of(context).unfocus();
+                  await Future<void>.delayed(const Duration(milliseconds: 300));
+                }
+
+                addEvent(LoginRequested());
+              },
               child: const Text('Login'),
             ),
           ],

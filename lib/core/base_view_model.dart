@@ -17,11 +17,7 @@ abstract class BaseEffect {
 
 abstract class BaseViewModel<BaseState, BaseEvent, BaseEffect> {
   BaseViewModel(BaseState initialState) : _state = Signal(initialState) {
-    _eventsSubscription = _events.stream.listen((event) {
-      if (event != null) {
-        onEvent(event);
-      }
-    });
+    _eventsSubscription = _events.stream.listen(onEvent);
   }
 
   late final Signal<BaseState> _state;

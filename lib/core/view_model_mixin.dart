@@ -8,18 +8,16 @@ mixin ViewModelMixin<T extends StatefulWidget,
   late final VM viewModel;
   late final StreamSubscription<BaseEffect> _effectSubscription;
 
-  BaseState get state => viewModel.state.value;
+  @protected
+  VM provideViewModel();
 
   @protected
-  VM createViewModel();
-
-  @protected
-  void onEffect(covariant BaseEffect effect);
+  void onEffect(covariant BaseEffect effect) {}
 
   @override
   void initState() {
     super.initState();
-    viewModel = createViewModel();
+    viewModel = provideViewModel();
     _effectSubscription = viewModel.effects.listen(onEffect);
   }
 
