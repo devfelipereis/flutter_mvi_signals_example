@@ -44,9 +44,19 @@ class _LoginPageState extends State<LoginPage>
     showDialog<void>(
       context: context,
       builder: (context) => const AlertDialog(
-        title: Text('Error, please try again.'),
+        title: Text('Oops!'),
+        content: Text('Authentication failed. Please try again.'),
       ),
     );
+  }
+
+  Future<void> _onLogin(BuildContext context) async {
+    if (FocusScope.of(context).hasFocus) {
+      FocusScope.of(context).unfocus();
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+    }
+
+    addEvent(LoginRequested());
   }
 
   @override
@@ -55,38 +65,62 @@ class _LoginPageState extends State<LoginPage>
       appBar: AppBar(
         title: const Text('MVI Example'),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            TextField(
-              decoration: const InputDecoration(labelText: 'Email'),
-              onChanged: (value) => addEvent(EmailChanged(value)),
-            ),
-            Watch(
-              (context) => Text('Email: ${viewModel.state.value.email}'),
-            ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Password'),
-              onChanged: (value) => addEvent(PasswordChanged(value)),
-            ),
-            Watch(
-              (context) => Text(
-                'Password: ${viewModel.state.value.password}',
-              ),
-              debugLabel: 'Password',
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                if (FocusScope.of(context).hasFocus) {
-                  FocusScope.of(context).unfocus();
-                  await Future<void>.delayed(const Duration(milliseconds: 300));
-                }
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Watch(
+          (context) {
+            final isAuthenticating = viewModel.state.value.isAuthenticating;
 
-                addEvent(LoginRequested());
-              },
-              child: const Text('Login'),
-            ),
-          ],
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextField(
+                  enabled: !isAuthenticating,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    hintText: 'admin@admin.com',
+                    prefixIcon: Icon(
+                      Icons.email,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  onChanged: (value) => addEvent(EmailChanged(value)),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  enabled: !isAuthenticating,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    hintText: '123456',
+                    prefixIcon: Icon(
+                      Icons.lock,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  obscureText: true,
+                  onChanged: (value) => addEvent(PasswordChanged(value)),
+                ),
+                const SizedBox(height: 16),
+                OutlinedButton(
+                  onPressed: isAuthenticating ? null : () => _onLogin(context),
+                  child: const Text(
+                    'LOGIN',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                SizedBox(
+                  height: 50,
+                  child: isAuthenticating
+                      ? const Center(child: CircularProgressIndicator())
+                      : null,
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

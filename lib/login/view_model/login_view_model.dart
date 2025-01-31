@@ -26,8 +26,20 @@ final class LoginViewModel
     updateState(state.value.copyWith(password: password));
   }
 
-  void _onLoginRequested() {
+  Future<void> _onLoginRequested() async {
     updateState(state.value.copyWith(isAuthenticating: true));
-    addEffect(LoginSuccess());
+
+    // Simulate a HTTP request
+    await Future<void>.delayed(const Duration(seconds: 2));
+
+    updateState(state.value.copyWith(isAuthenticating: false));
+
+    if (state.value.email == 'admin@admin.com' &&
+        state.value.password == '123456') {
+      addEffect(LoginSuccess());
+      return;
+    }
+
+    addEffect(LoginError());
   }
 }
