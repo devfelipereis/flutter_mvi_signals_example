@@ -61,6 +61,12 @@ class _LoginPageState extends State<LoginPage>
 
   @override
   Widget build(BuildContext context) {
+    // select only the isAuthenticating property from the state
+    final isAuthenticating = computed(
+      () => viewModel.state.value.isAuthenticating,
+      debugLabel: 'isAuthenticating',
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('MVI Example'),
@@ -69,14 +75,12 @@ class _LoginPageState extends State<LoginPage>
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Watch(
           (context) {
-            final isAuthenticating = viewModel.state.value.isAuthenticating;
-
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextField(
-                  enabled: !isAuthenticating,
+                  enabled: !isAuthenticating.value,
                   decoration: InputDecoration(
                     labelText: 'Email',
                     hintText: 'admin@admin.com',
@@ -89,7 +93,7 @@ class _LoginPageState extends State<LoginPage>
                 ),
                 const SizedBox(height: 8),
                 TextField(
-                  enabled: !isAuthenticating,
+                  enabled: !isAuthenticating.value,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     hintText: '123456',
@@ -103,7 +107,8 @@ class _LoginPageState extends State<LoginPage>
                 ),
                 const SizedBox(height: 16),
                 OutlinedButton(
-                  onPressed: isAuthenticating ? null : () => _onLogin(context),
+                  onPressed:
+                      isAuthenticating.value ? null : () => _onLogin(context),
                   child: const Text(
                     'LOGIN',
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -114,7 +119,7 @@ class _LoginPageState extends State<LoginPage>
                 ),
                 SizedBox(
                   height: 50,
-                  child: isAuthenticating
+                  child: isAuthenticating.value
                       ? const Center(child: CircularProgressIndicator())
                       : null,
                 ),
